@@ -1,0 +1,9 @@
+{
+    "model": "models/Lightweight-Face-Detection_w8a8.tflite",
+    "labels": "models/face_detection.labels",
+    "threshold": 70,
+    "maxResults": 5,
+    "delegate": "qnn",
+    "delegatePath": "libQnnTFLiteDelegate.so",
+    "delegateOptions": "QNNExternalDelegate,backend_type=htp"
+}
