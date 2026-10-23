@@ -13,6 +13,11 @@ Window {
     visible: true
     title: qsTr("Camera")
 
+    // Set from the --backend command line option; "edgeimpulse" by default.
+    required property string backend
+    // Set from the --config command line option; "<backend>_inference.json" by default.
+    required property string configFile
+
     Component.onCompleted: {
         session.camera.start()
         pipeline.start(window)
@@ -39,8 +44,8 @@ Window {
 
         VisionInference {
             id: detectionStep
-            name: "edgeimpulse"
-            model: "libgstedgeimpulse.so"
+            name: window.backend
+            configFile: window.configFile
         }
 
         InferenceResultParser {

@@ -1,6 +1,7 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
+#include <QtCore/qcommandlineparser.h>
 #include <QtGui/qguiapplication.h>
 #include <QtQml/qqmlapplicationengine.h>
 
@@ -17,7 +18,37 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    // The backend that runs the model, and the configuration file the vision step reads:
+    // by default configs/<backend>/inference.json, under the install directory of the
+    // application executable.
+    QCommandLineParser parser;
+    parser.addHelpOption();
+    const QCommandLineOption backendOption(
+            QStringLiteral("backend"),
+            QStringLiteral("The name of the inference backend step provider. The default is "
+                           "edgeimpulse."),
+            QStringLiteral("name"), QStringLiteral(""));
+    parser.addOption(backendOption);
+    // Not every backend reads a JSON file: some have a configuration format of their own.
+    const QCommandLineOption configOption(
+            QStringLiteral("config"),
+            QStringLiteral("The backend's configuration file. The default is "
+                           "configs/<name>/inference.json beside the executable."),
+            QStringLiteral("file"));
+    parser.addOption(configOption);
+    parser.process(app);
+    const QString backend = parser.value(backendOption);
+    if (backend.isEmpty()) {
+        qWarning("The backend name must not be empty");
+        return 1;
+    }
+    QString configFile = parser.value(configOption);
+    if (configFile.isEmpty())
+        configFile = QLatin1StringView("configs/") + backend + QLatin1StringView("/inference.json");
+
     QQmlApplicationEngine engine;
+    engine.setInitialProperties({ { QStringLiteral("backend"), backend },
+                                  { QStringLiteral("configFile"), configFile } });
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,
