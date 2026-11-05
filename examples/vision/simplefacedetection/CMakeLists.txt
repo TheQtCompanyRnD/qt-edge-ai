@@ -45,16 +45,18 @@ target_include_directories(simplefacedetection
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# The inference step's backend reads its configuration file, and the paths in it,
+# The inference step's provider reads its configuration file, and the paths in it,
 # relative to the directory of the executable.
-set(config_files
+# The build and install trees get the same layout.
+set(data_files
     configs/edgeimpulse/inference.json
     configs/imsdk/inference.json
     configs/deepstream/dsdetect1_pgie_config.yml
     configs/deepstream/dsdetect1_config.yml
+    models/face_detection_plain.labels
 )
-foreach(config_file IN LISTS config_files)
-    configure_file(${config_file} ${config_file} COPYONLY)
+foreach(data_file IN LISTS data_files)
+    configure_file(${data_file} ${data_file} COPYONLY)
 endforeach()
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -77,9 +79,7 @@ install(TARGETS simplefacedetection
     RUNTIME DESTINATION .
 )
 
-install(FILES
-    models/face_detection.labels
-    DESTINATION ${CMAKE_INSTALL_BINDIR}/models
-)
-
-install(FILES ${config_files} DESTINATION .)
+foreach(data_file IN LISTS data_files)
+    cmake_path(GET data_file PARENT_PATH data_dir)
+    install(FILES ${data_file} DESTINATION ${data_dir})
+endforeach()
