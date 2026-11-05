@@ -50,9 +50,9 @@ backend that you use, and put it where its configuration file says, relative to
 the executable:
 
 - **Edge Impulse:** train a model in Edge Impulse Studio and deploy it as a
-  GStreamer plugin. The default configuration expects `libgstedgeimpulse.so`.
+  GStreamer plugin. The configuration expects `libgstedgeimpulse.so`.
 - **Qualcomm IM SDK:** use a TensorFlow Lite detection model, for example one
-  from the IM SDK's model zoo. The default configuration expects
+  from the IM SDK's model zoo. The configuration expects
   `models/Lightweight-Face-Detection_w8a8.tflite` and `models/face_detection.labels`.
 - **NVIDIA DeepStream:** use the model of the DeepStream sample applications that
   `configs/deepstream/dsdetect1_pgie_config.yml` names.
@@ -63,12 +63,12 @@ Simple Face Detection takes two options:
 
 | Option | Description |
 | --- | --- |
-| `--backend <name>` | The inference backend: `edgeimpulse` (the default), `imsdk` or `deepstream`. |
+| `--backend <name>` | The inference backend: `edgeimpulse`, `imsdk` or `deepstream`. |
 | `--config <file>` | The backend's configuration file. The default is `configs/<name>/inference.json` next to the executable. |
 
 ```sh
-# Edge Impulse (default)
-./simplefacedetection
+# Edge Impulse
+./simplefacedetection --backend edgeimpulse
 
 # Qualcomm IM SDK
 ./simplefacedetection --backend imsdk
