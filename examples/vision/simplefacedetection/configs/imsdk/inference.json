@@ -1,9 +1,7 @@
 {
+    "module": "qfd",
     "model": "models/Lightweight-Face-Detection_w8a8.tflite",
-    "labels": "models/face_detection.labels",
+    "labels": "models/face_detection_plain.labels",
     "threshold": 70,
-    "maxResults": 5,
-    "delegate": "qnn",
-    "delegatePath": "libQnnTFLiteDelegate.so",
-    "delegateOptions": "QNNExternalDelegate,backend_type=htp"
+    "maxResults": 5
 }

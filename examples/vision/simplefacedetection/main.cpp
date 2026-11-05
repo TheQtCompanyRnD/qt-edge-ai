@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
 #include <QtCore/qcommandlineparser.h>
+#include <QtEdgeAi/qinferencebackendfactory.h>
 #include <QtGui/qguiapplication.h>
 #include <QtQml/qqmlapplicationengine.h>
 
@@ -18,36 +19,44 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    // The backend that runs the model, and the configuration file the vision step reads:
-    // by default configs/<backend>/inference.json, under the install directory of the
-    // application executable.
+    // The step provider that runs the model, and the configuration file the vision step reads:
+    // by default configs/<provider>/inference.json, relative to the directory of the
+    // executable.
     QCommandLineParser parser;
     parser.addHelpOption();
-    const QCommandLineOption backendOption(
-            QStringLiteral("backend"),
-            QStringLiteral("The name of the inference backend step provider. The default is "
-                           "edgeimpulse."),
-            QStringLiteral("name"), QStringLiteral(""));
-    parser.addOption(backendOption);
-    // Not every backend reads a JSON file: some have a configuration format of their own.
+    const QCommandLineOption providerOption(
+            QStringLiteral("provider"),
+            QStringLiteral("The name of the inference step provider. The default is the "
+                           "first available vision step provider."),
+            QStringLiteral("name"));
+    parser.addOption(providerOption);
+    // Not every provider reads a JSON file: some have a configuration format of their own.
     const QCommandLineOption configOption(
             QStringLiteral("config"),
-            QStringLiteral("The backend's configuration file. The default is "
-                           "configs/<name>/inference.json beside the executable."),
+            QStringLiteral("The provider's configuration file. The default is "
+                           "configs/<provider>/inference.json relative to the directory "
+                           "of the executable."),
             QStringLiteral("file"));
     parser.addOption(configOption);
     parser.process(app);
-    const QString backend = parser.value(backendOption);
-    if (backend.isEmpty()) {
-        qWarning("The backend name must not be empty");
+    QString provider = parser.value(providerOption);
+    if (!parser.isSet(providerOption)) {
+        // The providers that the target has depend on the SDKs that it was built with.
+        provider = QInferenceBackendFactory::instance()->defaultStepProvider();
+        if (provider.isEmpty()) {
+            qWarning("No vision step provider is available. Select one with --provider.");
+            return 1;
+        }
+    } else if (provider.isEmpty()) {
+        qWarning("The provider name must not be empty");
         return 1;
     }
     QString configFile = parser.value(configOption);
     if (configFile.isEmpty())
-        configFile = QLatin1StringView("configs/") + backend + QLatin1StringView("/inference.json");
+        configFile = QLatin1StringView("configs/") + provider + QLatin1StringView("/inference.json");
 
     QQmlApplicationEngine engine;
-    engine.setInitialProperties({ { QStringLiteral("backend"), backend },
+    engine.setInitialProperties({ { QStringLiteral("provider"), provider },
                                   { QStringLiteral("configFile"), configFile } });
     QObject::connect(
         &engine,

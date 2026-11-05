@@ -13,9 +13,9 @@ Window {
     visible: true
     title: qsTr("Camera")
 
-    // Set from the --backend command line option; "edgeimpulse" by default.
-    required property string backend
-    // Set from the --config command line option; "<backend>_inference.json" by default.
+    // Set from the --provider command line option; the default step provider by default.
+    required property string provider
+    // Set from the --config command line option; "configs/<provider>/inference.json" by default.
     required property string configFile
 
     Component.onCompleted: {
@@ -44,7 +44,7 @@ Window {
 
         VisionInference {
             id: detectionStep
-            name: window.backend
+            provider: window.provider
             configFile: window.configFile
         }
 
