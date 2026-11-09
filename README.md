@@ -1,6 +1,7 @@
 # Qt Edge AI examples
 
-Example applications for the Qt Edge AI module.
+Example applications for the [Qt Edge AI](https://doc-snapshots.qt.io/qtedgeai-1.0/qtedgeai-index.html)
+module.
 
 Qt Edge AI runs AI inference on live camera video on the device, without
 backend-specific pipeline code. An application describes an inference flow in
@@ -26,6 +27,8 @@ Technical Preview, and its API may change.
   | Qualcomm Dragonwing IQ9 | Edge Impulse, Qualcomm Intelligent Multimedia SDK |
   | NVIDIA Jetson AGX Orin, NVIDIA Jetson Thor | NVIDIA DeepStream |
 
+For each AI runtime there is its own backend provider plugin that the Edge AI module loads.
+
 Qt Edge AI builds on a development PC, but it runs inference only on the
 supported platforms. For installation and the full list of prerequisites, see the
 [Qt Edge AI documentation](https://doc-snapshots.qt.io/qtedgeai-1.0/qtedgeai-index.html).
@@ -40,13 +43,13 @@ qt-cmake -S examples/vision/simplefacedetection -B build
 cmake --build build
 ```
 
-The build copies the backend configuration files in `configs/` next to the
+The build copies the backend configuration files for each backend provider in `configs/` next to the
 executable, because the backends read them relative to it.
 
 ## AI models
 
 The AI models are not part of this repository. Get or train a model for the
-backend that you use, and put it where its configuration file says, relative to
+backend provider that you use, and put it where its configuration file says, relative to
 the executable:
 
 - **Edge Impulse:** train a model in Edge Impulse Studio and deploy it as a
@@ -63,18 +66,18 @@ Simple Face Detection takes two options:
 
 | Option | Description |
 | --- | --- |
-| `--backend <name>` | The inference backend: `edgeimpulse`, `imsdk` or `deepstream`. |
-| `--config <file>` | The backend's configuration file. The default is `configs/<name>/inference.json` next to the executable. |
+| `--provider <name>` | The inference backend provider: `edgeimpulse`, `imsdk` or `deepstream`. |
+| `--config <file>` | The provider's configuration file. The default is `configs/<name>/inference.json` next to the executable. |
 
 ```sh
 # Edge Impulse
-./simplefacedetection --backend edgeimpulse
+./simplefacedetection --provider edgeimpulse
 
 # Qualcomm IM SDK
-./simplefacedetection --backend imsdk
+./simplefacedetection --provider imsdk
 
 # NVIDIA DeepStream
-./simplefacedetection --backend deepstream --config configs/deepstream/dsdetect1_config.yml
+./simplefacedetection --provider deepstream --config configs/deepstream/dsdetect1_config.yml
 ```
 
 The example shows the camera video in a window and logs the detection results to
