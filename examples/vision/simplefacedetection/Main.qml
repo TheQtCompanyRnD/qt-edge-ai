@@ -17,6 +17,8 @@ Window {
     required property string provider
     // Set from the --config command line option; "configs/<provider>/inference.json" by default.
     required property string configFile
+    // Set from main.cpp; null lets Qt choose.
+    required property cameraFormat cameraFormat
 
     Component.onCompleted: {
         session.camera.start()
@@ -25,7 +27,9 @@ Window {
 
     CaptureSession {
         id: session
-        camera: Camera {}
+        camera: Camera {
+            cameraFormat: window.cameraFormat
+        }
         videoOutput: videoOutput
     }
 
