@@ -4,7 +4,27 @@
 #include <QtCore/qcommandlineparser.h>
 #include <QtEdgeAi/qinferencebackendfactory.h>
 #include <QtGui/qguiapplication.h>
+#include <QtMultimedia/qcameradevice.h>
+#include <QtMultimedia/qmediadevices.h>
 #include <QtQml/qqmlapplicationengine.h>
+
+// The largest YUYV format at 30 fps, or a null format to let Qt choose. Qt prefers MJPEG,
+// which decodes to I420, and the imsdk converter does not accept I420.
+static QCameraFormat preferredCameraFormat()
+{
+    const auto area = [](const QCameraFormat &format) {
+        return format.resolution().width() * format.resolution().height();
+    };
+    QCameraFormat best;
+    const auto formats = QMediaDevices::defaultVideoInput().videoFormats();
+    for (const QCameraFormat &format : formats) {
+        if (format.pixelFormat() != QVideoFrameFormat::Format_YUYV || format.maxFrameRate() < 29.f)
+            continue;
+        if (best.isNull() || area(format) > area(best))
+            best = format;
+    }
+    return best;
+}
 
 int main(int argc, char *argv[])
 {
@@ -57,7 +77,9 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.setInitialProperties({ { QStringLiteral("provider"), provider },
-                                  { QStringLiteral("configFile"), configFile } });
+                                  { QStringLiteral("configFile"), configFile },
+                                  { QStringLiteral("cameraFormat"),
+                                    QVariant::fromValue(preferredCameraFormat()) } });
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,
