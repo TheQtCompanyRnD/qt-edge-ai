@@ -8,8 +8,6 @@
 #include <QtMultimedia/qmediadevices.h>
 #include <QtQml/qqmlapplicationengine.h>
 
-// The largest YUYV format at 30 fps, or a null format to let Qt choose. Qt prefers MJPEG,
-// which decodes to I420, and the imsdk converter does not accept I420.
 static QCameraFormat preferredCameraFormat()
 {
     const auto area = [](const QCameraFormat &format) {

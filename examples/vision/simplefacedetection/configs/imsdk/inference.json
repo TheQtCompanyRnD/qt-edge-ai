@@ -1,6 +1,6 @@
 {
     "module": "qfd",
-    "model": "models/Lightweight-Face-Detection_w8a8.tflite",
+    "model": "models/face_det_lite.tflite",
     "labels": "models/face_detection_plain.labels",
     "threshold": 70,
     "maxResults": 5
