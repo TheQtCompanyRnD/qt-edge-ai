@@ -56,7 +56,7 @@ the executable:
   GStreamer plugin. The configuration expects `libgstedgeimpulse.so`.
 - **Qualcomm IM SDK:** use a TensorFlow Lite detection model, for example one
   from the IM SDK's model zoo. The configuration expects
-  `models/Lightweight-Face-Detection_w8a8.tflite` and `models/face_detection.labels`.
+  `models/face_det_lite.tflite` and `models/face_detection_plain.labels`.
 - **NVIDIA DeepStream:** use the model of the DeepStream sample applications that
   `configs/deepstream/dsdetect1_pgie_config.yml` names.
 
