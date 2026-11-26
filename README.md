@@ -1,6 +1,6 @@
 # Qt Edge AI examples
 
-Example applications for the [Qt Edge AI](https://doc-snapshots.qt.io/qtedgeai-1.0/qtedgeai-index.html)
+Example applications for the [Qt Edge AI](https://doc.qt.io/qtedgeai/)
 module.
 
 Qt Edge AI runs AI inference on live camera video on the device, without
@@ -31,7 +31,7 @@ For each AI runtime there is its own backend provider plugin that the Edge AI mo
 
 Qt Edge AI builds on a development PC, but it runs inference only on the
 supported platforms. For installation and the full list of prerequisites, see the
-[Qt Edge AI documentation](https://doc-snapshots.qt.io/qtedgeai-1.0/qtedgeai-index.html).
+[Qt Edge AI documentation](https://doc.qt.io/qtedgeai/).
 
 ## Building
 
